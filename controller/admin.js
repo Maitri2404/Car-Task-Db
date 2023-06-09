@@ -4,6 +4,7 @@ async function getTotalSoldCar(req, res) {
     const totalSoldcar = await Transaction.find().count()
     return res.status(200).json({ "Total Sold Car": totalSoldcar })
 }
+console.log('test')
 
 async function getSoldCarByCity(req, res) {
     try {
