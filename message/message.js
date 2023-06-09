@@ -4,3 +4,12 @@ const message = {
     brandNotFound: {message: 'Brand not found'},
     checkSameCity: {message: 'Seller and user are not from the same city'}
 }
+
+const status = {
+    success : 200,
+    created: 201,
+    notFound: 404,
+    serverError: 500
+}
+
+module.exports = { message , status }
