@@ -8,7 +8,7 @@ async function brand(req, res) {
     try {
         const brand = new Brand(req.body)
         await brand.save()
-        return res.status(201).json({message: brand})
+        return res.status(201).json({ message: brand })
     } catch (err) {
         console.log(err.message)
         return res.status(500).json({ error: 'Internal server error' })
@@ -88,8 +88,8 @@ async function transaction(req, res) {
         // console.log(userId)
         const carId = await Car.findOne({ _id: iCarId })
         // console.log(carId)
-        if(!carId){
-            return res.status(404).json({error:"Car not found"})
+        if (!carId) {
+            return res.status(404).json({ error: "Car not found" })
         }
 
         const transaction = new Transaction({
@@ -98,7 +98,7 @@ async function transaction(req, res) {
             iCarId: carId
         })
 
-        carId.isSold = true; 
+        carId.isSold = true;
         await transaction.save()
         return res.status(201).json(transaction)
     } catch (err) {

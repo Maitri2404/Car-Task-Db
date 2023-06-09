@@ -14,9 +14,6 @@ app.get('/healthCheck', (req, res) => {
   res.status(200).json({ message: 'Working' });
 });
 
-// app.all('*',(req,res)=>{
-//   res.status(404).json({message: 'not found'})
-// })
 app.use(router);
 
 app.listen(config.PORT || 3000, () => {
