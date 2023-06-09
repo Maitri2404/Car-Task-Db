@@ -6,7 +6,8 @@ const {
   car,
   user,
   seller,
-  transaction
+  transaction,
+  login
 } = require('../controller/controller');
 
 const {
@@ -16,15 +17,16 @@ const {
   getMostSoldBrand
 } = require('../controller/admin')
 
-router.post('/addBrand', brand);
+router.post('/addBrand', brand)
 
-router.post('/addCar', car);
+router.post('/addCar', car)
 
-router.post('/addUser', user);
+router.post('/addUser', user)
 
-router.post('/addSeller', seller);
+router.post('/addSeller', seller)
+router.post('/login',login)
 
-router.post('/buyCar', checkCity, transaction);
+router.post('/buyCar', checkCity, transaction)
 
 router.get('/admin/getTotalSoldCar', getTotalSoldCar)
 

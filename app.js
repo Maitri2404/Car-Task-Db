@@ -5,6 +5,7 @@ require('dotenv').config();
 const config = require('./config/config');
 const router = require('./routes/routes');
 const db = require('./database/db');
+const message = require('./message/message')
 const app = express();
 
 app.use(logger('dev'));

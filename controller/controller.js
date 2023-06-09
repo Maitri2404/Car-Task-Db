@@ -3,25 +3,28 @@ const Brand = require('../model/brands')
 const Car = require('../model/cars')
 const Seller = require('../model/sellers')
 const User = require('../model/users')
+const { message, status } = require('../message/message')
+const jwt = require('jsonwebtoken')
+const config = require('../config/config')
 
 async function brand(req, res) {
     try {
         const brand = new Brand(req.body)
         await brand.save()
-        return res.status(201).json({ message: brand })
+        return res.status(status.created).json({ message: brand })
     } catch (err) {
         console.log(err.message)
-        return res.status(500).json({ error: 'Internal server error' })
+        return res.status(status.serverError).json(message.serverError)
     }
 }
 
 async function car(req, res) {
     try {
         const { sCarName, iBrandId, nYear } = req.body
-        const brand = await Brand.findOne({ _id: iBrandId })
+        const brand = await Brand.findById({ _id: iBrandId })
         console.log(brand)
         if (!brand) {
-            return res.status(404).json({ message: 'Brand not found' })
+            return res.status(status.notFound).json(message.brandNotFound)
         }
         const car = new Car({
             iBrandId: brand,
@@ -32,7 +35,7 @@ async function car(req, res) {
         return res.status(201).json(car)
     } catch (err) {
         console.log(err.message)
-        return res.status(500).json({ error: 'Internal  server error1' })
+        return res.status(status.serverError).json(message.serverError)
     }
 }
 
@@ -40,10 +43,10 @@ async function user(req, res) {
     try {
         const user = new User(req.body)
         await user.save()
-        return res.status(201).json(user)
+        return res.status(status.created).json(user)
     } catch (err) {
         console.log(err.message)
-        return res.status(500).json({ error: 'Internal  server error2' })
+        return res.status(status.serverError).json(message.serverError)
     }
 }
 
@@ -53,16 +56,13 @@ async function seller(req, res) {
         const carArr = []
 
         for (let car of aCar) {
-            const carId = await Car.findOne({ _id: car })
+            const carId = await Car.findById({ _id: car })
             console.log(carId)
             if (!carId) {
-                return res.status(404).json({ error: 'Car not found' })
+                return res.status(status.notFound).json(message.carNotFound)
             }
-            console.log(carId)
-
             carArr.push(carId)
         }
-        console.log(carArr)
 
         const seller = new Seller({
             sSellerName,
@@ -71,10 +71,10 @@ async function seller(req, res) {
         })
 
         await seller.save()
-        return res.status(201).json(seller)
+        return res.status(status.created).json(seller)
     } catch (err) {
         console.log(err.message)
-        return res.status(500).json({ error: 'Internal  server error' })
+        return res.status(status.serverError).json(message.serverError)
     }
 }
 
@@ -82,14 +82,14 @@ async function transaction(req, res) {
     try {
 
         const { iCarId, iSellerId, iUserId } = req.body
-        const sellerId = await Seller.findOne({ _id: iSellerId })
+        const sellerId = await Seller.findById({ _id: iSellerId })
         // console.log("sellerId:",sellerId)
-        const userId = await User.findOne({ _id: iUserId })
+        const userId = await User.findById({ _id: iUserId })
         // console.log(userId)
-        const carId = await Car.findOne({ _id: iCarId })
+        const carId = await Car.findById({ _id: iCarId })
         // console.log(carId)
         if (!carId) {
-            return res.status(404).json({ error: "Car not found" })
+            return res.status(status.notFound).json(message.carNotFound)
         }
 
         const transaction = new Transaction({
@@ -100,11 +100,26 @@ async function transaction(req, res) {
 
         carId.isSold = true;
         await transaction.save()
-        return res.status(201).json(transaction)
+        return res.status(status.created).json(transaction)
     } catch (err) {
         console.log(err.message)
-        return res.status(500).json({ error: 'Internal  server error' })
+        return res.status(status.serverError).json(message.serverError)
     }
+}
+
+async function login(req,res){
+    const { sUserName, sPassword } = req.body
+
+    const findUser = User.findOne({sUserName: sUserName})
+    if(!findUser){
+        return res.status(status.notFound).json(message.userNotFound)
+    }
+    const token = jwt.sign(
+        { username: findUser.sUserName },
+        config.SECRET_KEY,
+        { expiresIn: '1h' }
+      )
+      return res.json({ token })
 }
 
 module.exports = {
@@ -112,5 +127,6 @@ module.exports = {
     car,
     user,
     seller,
-    transaction
+    transaction,
+    login
 }
