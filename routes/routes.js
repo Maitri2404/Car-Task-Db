@@ -6,8 +6,7 @@ const {
   car,
   user,
   seller,
-  transaction,
-  // login
+  transaction
 } = require('../controller/controller');
 
 const {
@@ -24,7 +23,6 @@ router.post('/addCar', car)
 router.post('/addUser', user)
 
 router.post('/addSeller', seller)
-// router.post('/login',login)
 
 router.post('/buyCar', checkCity, transaction)
 

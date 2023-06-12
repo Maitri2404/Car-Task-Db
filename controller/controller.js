@@ -4,8 +4,6 @@ const Car = require('../model/cars')
 const Seller = require('../model/sellers')
 const User = require('../model/users')
 const { message, status } = require('../message/message')
-const jwt = require('jsonwebtoken')
-const config = require('../config/config')
 
 async function brand(req, res) {
     try {
@@ -107,26 +105,10 @@ async function transaction(req, res) {
     }
 }
 
-async function login(req,res){
-    const { sUserName, sPassword } = req.body
-
-    const findUser = User.findOne({sUserName: sUserName})
-    if(!findUser){
-        return res.status(status.notFound).json(message.userNotFound)
-    }
-    const token = jwt.sign(
-        { username: findUser.sUserName },
-        config.SECRET_KEY,
-        { expiresIn: '1h' }
-      )
-      return res.json({ token })
-}
-
 module.exports = {
     brand,
     car,
     user,
     seller,
-    transaction,
-    login
+    transaction
 }
